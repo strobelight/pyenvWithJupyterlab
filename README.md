@@ -21,6 +21,7 @@ Start jupyter lab with environment desired from pyenv.
 
 ## Start jupyter
 * `cd your-project`
+* this directory should have a .python-version file
 * `$HOME/bin/startJupyter`  # browser should open
 
 ## Start jupyter via applescript
