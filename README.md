@@ -19,11 +19,16 @@ Start jupyter lab with environment desired from pyenv.
 * `pyenv local jupyter`
 * `pip install jupyterlab`
 
-## Add jupyter environment to your project
-* `cd your-project`
-* `pyenv local`  # note the current environment
-* `pyenv local your-current-env jupyter`  # add jupyter env
-* `cat .python-version` should now show at least two
-
 ## Start jupyter
-* $HOME/bin/startJupyter  # browser should open
+* `cd your-project`
+* `$HOME/bin/startJupyter`  # browser should open
+
+## Start jupyter via applescript
+```
+set loc to choose folder with prompt " What directory should jupyter be run from? " 
+set pLoc to quoted form of POSIX path of loc as string 
+do shell script "cd " & pLoc & "; $HOME/bin/startJupyter"
+```
+
+## Troubleshooting
+* if run via Applescript, check /tmp/jupyter.log
