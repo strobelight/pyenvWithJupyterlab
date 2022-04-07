@@ -16,7 +16,8 @@ if command -v pyenv > /dev/null 2>&1; then
     if [ -f .python-version ]; then
         export PYTHONPATH=$(pypath)
     else
-        cd $HOME/src/projects
+        echo "pyenv doesn't appear to be established for this directory, using $HOME"
+        cd $HOME
         pyenv local jupyter
     fi
     pyenv local
