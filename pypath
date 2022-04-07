@@ -1,0 +1,13 @@
+#!/bin/bash
+
+RESULT=""
+for i in $(pyenv prefix | tr ':' '\n'); do
+    pyver="$(ls -d $i/lib/python*)"
+    pypath="$pyver/site-packages:$pyver/lib-dynload"
+    if [ -n "$RESULT" ]; then
+        RESULT="${RESULT}:$pypath"
+    else
+        RESULT="$pypath"
+    fi
+done
+echo $RESULT
