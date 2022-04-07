@@ -1,0 +1,26 @@
+#!/bin/bash
+
+exec > /tmp/jupyter.log 2>&1
+
+export PS4='+ (\t) ${LINENO}: '
+#set -x
+
+echo "$@"
+
+export PYENV_ROOT=$HOME/.pyenv
+PATH="$PATH:/usr/local/bin:$PYENV_ROOT/shims:$HOME/bin"
+if command -v pyenv > /dev/null 2>&1; then
+    /bin/pwd
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+    if [ -f .python-version ]; then
+        export PYTHONPATH=$(pypath)
+    else
+        cd $HOME/src/projects
+        pyenv local jupyter
+    fi
+    pyenv local
+    JP=$(pyenv which jupyter)
+    #nohup $JP lab --no-browser --port=8888 --port-retries=0 --ServerApp.password_required=False >/dev/null 2>&1 &
+    nohup $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False &
+fi
