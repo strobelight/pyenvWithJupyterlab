@@ -1,6 +1,8 @@
 #!/bin/bash
 
-exec > /tmp/jupyter.log 2>&1
+if ! tty -s; then
+    exec > /tmp/jupyter.log 2>&1
+fi
 
 export PS4='+ (\t) ${LINENO}: '
 #set -x
@@ -16,7 +18,9 @@ if command -v pyenv > /dev/null 2>&1; then
     eval "$(pyenv virtualenv-init -)"
     JUPYTER_PREFIX="$(pyenv prefix jupyter)"
     JUPYTER_LIB="$(ls -d $JUPYTER_PREFIX/lib/python*)"
-    JUPYTERPATH="$JUPYTER_LIB/site-packages:$JUPYTER_LIB/lib-dynload"
+    VIRT_PREFIX="$(pyenv virtualenv-prefix jupyter)"
+    DYN_LIB="$(ls -d $VIRT_PREFIX/lib/python*)"
+    JUPYTERPATH="$JUPYTER_LIB/site-packages:$JUPYTER_LIB/lib-dynload:$DYN_LIB/lib-dynload"
 
     if [ -f .python-version ]; then
         export PYTHONPATH="$(pypath):$JUPYTERPATH"
@@ -25,6 +29,7 @@ if command -v pyenv > /dev/null 2>&1; then
         exit 1
     fi
     echo "pyenv: $(pyenv local)"
+    echo "PYTHONPATH: $PYTHONPATH"
     JP="$JUPYTER_PREFIX/bin/jupyter"
 
     pyenv shell jupyter
