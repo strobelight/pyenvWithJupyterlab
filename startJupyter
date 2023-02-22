@@ -10,6 +10,7 @@ export PS4='+ (\t) ${LINENO}: '
 echo "Args: $@"
 
 export PYENV_ROOT=$HOME/.pyenv
+export SHELL=/usr/local/bin/bash
 PATH="$PATH:/usr/local/bin"
 if command -v pyenv > /dev/null 2>&1; then
     PATH="$PATH:$PYENV_ROOT/shims:$HOME/bin"
