@@ -26,8 +26,15 @@ if command -v pyenv > /dev/null 2>&1; then
     fi
     echo "pyenv: $(pyenv local)"
     JP="$JUPYTER_PREFIX/bin/jupyter"
-    #nohup $JP lab --no-browser --port=8888 --port-retries=0 --ServerApp.password_required=False >/dev/null 2>&1 &
-    nohup $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False &
+
+    pyenv shell jupyter
+    python -m ipykernel install --user --name $(pyenv local)
+
+    if ! tty -s; then
+        nohup $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False &
+    else
+        $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False
+    fi
 else
     echo "pyenv doesn't appear to exist in $PATH"
     exit 1
