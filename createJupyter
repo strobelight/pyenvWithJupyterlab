@@ -13,8 +13,12 @@ if command -v pyenv > /dev/null 2>&1; then
     eval "$(pyenv virtualenv-init -)"
     pyenv install --skip-existing $python_version
     pyenv virtualenv $python_version jupyter
-    pyenv shell jupyter
+    VENV=$(pyenv local)
+    pyenv local jupyter
     pip install ipykernel
+    pip install notebook
+    pip install jupyterlab
+    pyenv local $VENV
 else
     echo "pyenv doesn't appear to exist in $PATH"
     exit 1

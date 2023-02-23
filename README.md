@@ -1,7 +1,9 @@
 # pyenvWithJupyterlab
-Start jupyter lab with environment desired from pyenv.
+Start jupyter notebook with environment desired from pyenv.
 
-The jupyterlab is installed in a virtual environment, and kernels added from your other virtual environment which will bring in modules installed in your virutal environment. Basically, if coding in say python 3.8 virtual environment, but jupyter installed in 3.10, after the browser tab starts, select the correct kernel.
+The jupyterlab  and notebook is installed in a virtual environment, and kernels added from your other virtual environment which will bring in modules installed in your virutal environment. Basically, if coding in say python 3.8 virtual environment, but jupyter installed in 3.10, after the browser tab starts, select the correct kernel.
+
+Startup time is increased the first time a jupyter environment is created from your current virtual environment. This done in order that your current virtual environment is not tainted with extra modules from the installation of modules to support jupyter.
 
 ## Pre-requisites
 * python

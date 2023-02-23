@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SUBCOMMAND=notebook
+
 if ! tty -s; then
     exec > /tmp/jupyter.log 2>&1
 fi
@@ -17,29 +19,37 @@ if command -v pyenv > /dev/null 2>&1; then
     echo "Cwd: $(/bin/pwd)"
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
-    JUPYTER_PREFIX="$(pyenv prefix jupyter)"
-    JUPYTER_LIB="$(ls -d $JUPYTER_PREFIX/lib/python*)"
-    VIRT_PREFIX="$(pyenv virtualenv-prefix jupyter)"
-    DYN_LIB="$(ls -d $VIRT_PREFIX/lib/python*)"
-    JUPYTERPATH="$JUPYTER_LIB/site-packages:$JUPYTER_LIB/lib-dynload:$DYN_LIB/lib-dynload"
+    VENV=$(pyenv local)
+    JUPYTER_PREFIX="$(pyenv virtualenv-prefix jupyter)/envs/jupyter"
 
     if [ -f .python-version ]; then
-        export PYTHONPATH="$(pypath):$JUPYTERPATH"
+        echo "pyenv local: $VENV"
     else
         echo "pyenv doesn't appear to be established for this directory"
         exit 1
     fi
-    echo "pyenv: $(pyenv local)"
-    echo "PYTHONPATH: $PYTHONPATH"
+    echo "pyenv: ${VENV}"
     JP="$JUPYTER_PREFIX/bin/jupyter"
+    echo "jupyter: $JP"
 
-    pyenv shell jupyter
-    python -m ipykernel install --user --name $(pyenv local)
+    # establish a jupyter env if not already present
+    if ! pyenv shell ${VENV}-jupyter; then
+        pyenv virtualenv ${VENV} ${VENV}-jupyter
+        if [ ! -f requirements.txt ]; then
+            pip freeze > requirements.txt
+        fi
+        pyenv local ${VENV}-jupyter
+        pip install -r requirements.txt
+        pip install ipykernel
+    fi
+    pyenv local ${VENV}-jupyter
+    python -m ipykernel install --prefix="$JUPYTER_PREFIX" --name=${VENV} --display-name="${VENV} $(python -V)"
+    pyenv local ${VENV}
 
     if ! tty -s; then
-        nohup $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False &
+        nohup $JP $SUBCOMMAND --port=8888 --port-retries=0 --ServerApp.password_required=False &
     else
-        $JP lab --port=8888 --port-retries=0 --ServerApp.password_required=False
+        $JP $SUBCOMMAND --port=8888 --port-retries=0 --ServerApp.password_required=False
     fi
 else
     echo "pyenv doesn't appear to exist in $PATH"
