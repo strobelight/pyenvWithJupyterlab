@@ -1,0 +1,21 @@
+#!/bin/bash
+
+python_version="${1:-3.10.6}"
+export PS4='+ (\t) ${LINENO}: '
+#set -x
+
+export PYENV_ROOT=$HOME/.pyenv
+export SHELL=/usr/local/bin/bash
+PATH="$PATH:/usr/local/bin"
+if command -v pyenv > /dev/null 2>&1; then
+    PATH="$PATH:$PYENV_ROOT/shims:$HOME/bin"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+    pyenv install --skip-existing $python_version
+    pyenv virtualenv $python_version jupyter
+    pyenv shell jupyter
+    pip install ipykernel
+else
+    echo "pyenv doesn't appear to exist in $PATH"
+    exit 1
+fi

@@ -12,15 +12,12 @@ The jupyterlab is installed in a virtual environment, and kernels added from you
 
 ## Installation
 * `mkdir $HOME/bin`
-* copy startJupyter and pypath to $HOME/bin
+* copy startJupyter, createJupyter, and pypath to $HOME/bin
 * `cd $HOME/bin`
 * `chmod +x *`
 
 ## Establish jupyter environment
-* `pyenv virtualenv 3.10.3 jupyter` # pick another python 3 version if you like
-* `pyenv shell jupyter`
-* `pip install jupyterlab jupyter_nbextensions_configurator`
-* `pyenv shell -`
+* `createJupyter [python-version]`  # defaults to 3.10.6
 
 ## Start jupyter
 * `cd your-project`
