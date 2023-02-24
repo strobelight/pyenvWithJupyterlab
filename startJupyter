@@ -31,7 +31,7 @@ if command -v pyenv > /dev/null 2>&1; then
     LOCAL_PREFIX="$(pyenv prefix)"
     JUPYTER_PREFIX="$(pyenv prefix jupyter)"
 
-    if [ "$LOCAL_PREFIX" = "$JUPYTER_PREFIX" ]; then
+    if [ "$LOCAL_PREFIX" = "$JUPYTER_PREFIX" -o "$LOCAL_PREFIX" != "${LOCAL_PREFIX%%-jupyter}" ]; then
         echo "should not already be in the jupyter environment"
         exit 1
     fi
