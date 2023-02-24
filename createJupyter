@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec > >(tee /tmp/createJupyter.log) 2>&1
+
 python_version="${1:-3.10.6}"
 export PS4='+ (\t) ${LINENO}: '
 #set -x
@@ -7,6 +9,36 @@ export PS4='+ (\t) ${LINENO}: '
 export PYENV_ROOT=$HOME/.pyenv
 export SHELL=/usr/local/bin/bash
 PATH="$PATH:/usr/local/bin"
+
+# WhatToInstall
+#   nbextensions for use with "jupyter notebook"
+#   all_jupyter
+WhatToInstall=all_jupyter
+
+Install_nbextensions() {
+    # by default, since the notebook version is >= 6.0.0, all the extensions
+    # will be disabled, but you can uncheck, and see if one works.
+    #
+    # the latest notebook version (6.5.x) broke the nbextensions tab from appearing.
+    pip install notebook==6.4.12
+    pip install jupyter_contrib_nbextensions
+
+    # install extensions in virtual environment (not enabled yet)
+    jupyter contrib nbextension install --prefix $(pyenv prefix jupyter)
+
+    # let user decide which extension to enable in nbextensions tab
+    jupyter nbextensions_configurator enable
+}
+
+Install_all_jupyter() {
+    pip install jupyterlab
+    pip install voila
+
+    # install older notebook that may work with extensions tab
+    Install_nbextensions
+    # pip install notebook
+}
+
 if command -v pyenv > /dev/null 2>&1; then
     PATH="$PATH:$PYENV_ROOT/shims:$HOME/bin"
     eval "$(pyenv init -)"
@@ -16,8 +48,9 @@ if command -v pyenv > /dev/null 2>&1; then
     VENV=$(pyenv local)
     pyenv local jupyter
     pip install ipykernel
-    pip install notebook
-    pip install jupyterlab
+
+    eval "Install_${WhatToInstall}" || exit 1
+
     pyenv local $VENV
 else
     echo "pyenv doesn't appear to exist in $PATH"

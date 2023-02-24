@@ -1,0 +1,8 @@
+#!/bin/bash
+
+pyenv virtualenv-delete -f jupyter
+pyenv virtualenvs | grep -- -jupyter | grep -v "/envs/" | awk '{print $1}' | xargs -L 1 pyenv virtualenv-delete -f
+rm -rf ~/.jupyter
+rm -rf ~/Library/Jupyter
+rm -rf ~/.local/share/jupyter
+rm -rf /usr/local/share/jupyter
