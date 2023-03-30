@@ -47,6 +47,7 @@ if command -v pyenv > /dev/null 2>&1; then
     pyenv virtualenv $python_version jupyter
     VENV=$(pyenv local)
     pyenv local jupyter
+    pip install -U pip
     pip install ipykernel
 
     eval "Install_${WhatToInstall}" || exit 1
